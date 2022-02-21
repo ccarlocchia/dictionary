@@ -1,8 +1,10 @@
 # Dictionary React App
 
+You can check it in here → [Dictionary App](https://ccarlocchia.github.io/dictionary/)
+
 ---
 
-### Script to run this project
+### Script to run this project locally
 
 In the project directory, you can run:
 
