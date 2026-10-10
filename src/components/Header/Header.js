@@ -2,7 +2,7 @@ import { TextField } from '@mui/material';
 import React from 'react';
 import './Header.css';
 
-const Header = ({setWord, word, setData, }) => {
+const Header = ({setWord, word}) => {
 
     
 

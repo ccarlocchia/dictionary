@@ -13,6 +13,8 @@ function App() {
 
   const [word, setWord] = useState('');
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const themePalette = useTheme();
   const contextColorMode = React.useContext(ColorModeContext);
   const [mode, setMode] = React.useState('light');
@@ -37,19 +39,45 @@ function App() {
   );
 
   useEffect(() => {
+    const searchTerm = word.trim();
 
-    const dictionaryApi = async () => {
+    if (!searchTerm) {
+      setData([]);
+      setError('');
+      setLoading(false);
+      return;
+    }
+
+    const controller = new AbortController();
+    setData([]);
+    setError('');
+    setLoading(true);
+
+    const timeout = window.setTimeout(async () => {
       try {
-        const data = await axios.get(
-          `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
+        const response = await axios.get(
+          `https://en.wiktionary.org/api/rest_v1/page/definition/${encodeURIComponent(searchTerm)}`,
+          { signal: controller.signal }
         );
-        setData(data.data);
-      } catch (error) {
-        console.log(error);
+        setData(response.data.en || []);
+      } catch (requestError) {
+        if (!controller.signal.aborted) {
+          if (!requestError.response || requestError.response.status !== 404) {
+            console.error('Unable to load dictionary definition', requestError);
+            setError('Unable to load the definition. Please try again.');
+          }
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
       }
-    };
+    }, 300);
 
-    dictionaryApi();
+    return () => {
+      window.clearTimeout(timeout);
+      controller.abort();
+    };
   }, [word]);
 
 
@@ -100,13 +128,14 @@ function App() {
             <Header 
               word={word} 
               setWord={setWord}
-              setData={setData}
               />
             {
               data && (
                 <Definitions
                   word={word}
                   data={data}
+                  loading={loading}
+                  error={error}
                 />
               )}
           </Container>
