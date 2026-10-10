@@ -1,10 +1,13 @@
 import React from 'react';
-import '@testing-library/jest-dom';
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import * as matchers from '@testing-library/jest-dom/matchers';
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import axios from 'axios';
+import { afterEach, beforeEach, expect, test, vi } from 'vitest';
 import App from './App';
 
-jest.mock('axios');
+expect.extend(matchers);
+
+vi.mock('axios');
 
 const createEntry = (definition) => ({
   partOfSpeech: 'noun',
@@ -19,7 +22,7 @@ const createEntry = (definition) => ({
 
 const advanceSearchDebounce = async () => {
   await act(async () => {
-    jest.advanceTimersByTime(300);
+    vi.advanceTimersByTime(300);
     await Promise.resolve();
     await Promise.resolve();
   });
@@ -32,14 +35,15 @@ const searchFor = (word) => {
 };
 
 beforeEach(() => {
-  jest.useFakeTimers();
+  vi.useFakeTimers();
   axios.get.mockReset();
 });
 
 afterEach(() => {
-  jest.clearAllTimers();
-  jest.useRealTimers();
-  jest.restoreAllMocks();
+  cleanup();
+  vi.clearAllTimers();
+  vi.useRealTimers();
+  vi.restoreAllMocks();
 });
 
 test('loads and displays definitions, examples, and synonyms', async () => {
@@ -78,7 +82,7 @@ test('shows a not-found message when the API returns 404', async () => {
 
 test('shows an error message when the API request fails', async () => {
   axios.get.mockRejectedValue(new Error('Network unavailable'));
-  const consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
+  const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
 
   render(<App />);
   searchFor('hello');
