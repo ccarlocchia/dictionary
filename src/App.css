@@ -1,3 +1,36 @@
-.App{
-    background-image:url('https://wallpaperaccess.com/full/5680348.jpg');
+.App {
+  min-height: 100vh;
+  background-image: url('https://wallpaperaccess.com/full/5680348.jpg');
+  background-position: center;
+  background-size: cover;
+  transition: background-color 0.5s linear;
+}
+
+.pageContainer {
+  box-sizing: border-box;
+  display: flex !important;
+  flex-direction: column;
+  gap: clamp(1rem, 3vh, 2rem);
+  min-height: 100vh;
+  padding-top: 1rem;
+  padding-bottom: 2rem;
+}
+
+.modeButton {
+  flex: 0 0 auto;
+}
+
+@supports (min-height: 100dvh) {
+  .App,
+  .pageContainer {
+    min-height: 100dvh;
+  }
+}
+
+@media (max-width: 600px) {
+  .pageContainer {
+    gap: 0.75rem;
+    padding-top: 0.25rem;
+    padding-bottom: 1rem;
+  }
 }

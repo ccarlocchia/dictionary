@@ -56,10 +56,12 @@ function App() {
     const timeout = window.setTimeout(async () => {
       try {
         const response = await axios.get(
-          `https://en.wiktionary.org/api/rest_v1/page/definition/${encodeURIComponent(searchTerm)}`,
+          `https://freedictionaryapi.com/api/v1/entries/en/${encodeURIComponent(searchTerm)}`,
           { signal: controller.signal }
         );
-        setData(response.data.en || []);
+        if (!controller.signal.aborted) {
+          setData(response.data.entries || []);
+        }
       } catch (requestError) {
         if (!controller.signal.aborted) {
           if (!requestError.response || requestError.response.status !== 404) {
@@ -82,23 +84,12 @@ function App() {
 
 
   return (
-    <div 
-      className="App" 
-      style={{
-        height:'100vh',
-        transition: "all 0.5s linear"
-        }}
-      
-    >
+    <div className="App">
       <ColorModeContext.Provider value={contextColorMode}>
         <ThemeProvider theme={provTheme}>
-          <Container  
-            style={{
-              display:"flex", 
-              flexDirection:"column", 
-              height:'100vh', 
-              justifyContent:"space-evenly"
-            }}
+          <Container
+            className="pageContainer"
+            maxWidth="md"
           sx={{
               bgcolor: 'background.default',
               color: 'text.primary',

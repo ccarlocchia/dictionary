@@ -1,9 +1,6 @@
 import React from 'react';
 import './Definitions.css';
 
-const htmlToText = (html) =>
-    new DOMParser().parseFromString(html, 'text/html').body.textContent || '';
-
 const Definitions = ({data, word, loading, error}) => {
   return (
     <div className='meanings'>
@@ -18,24 +15,30 @@ const Definitions = ({data, word, loading, error}) => {
       ) : (
         <>
           {data.map((entry) =>
-            entry.definitions.map((definition, index) => (
+            entry.senses.map((sense, index) => (
               <div className='singleMean' key={`${entry.partOfSpeech}-${index}`}>
-                <b>{htmlToText(definition.definition)}</b>
+                <i>{entry.partOfSpeech}</i>
+                <b>{sense.definition}</b>
                 <hr style={{width:"100%"}}/>
-                {definition.examples && definition.examples[0] && (
+                {sense.examples && sense.examples[0] && (
                   <span>
-                    <b>Example: </b>{htmlToText(definition.examples[0])}
+                    <b>Example: </b>{sense.examples[0]}
+                  </span>
+                )}
+                {sense.synonyms && sense.synonyms.length > 0 && (
+                  <span>
+                    <b>Synonyms: </b>{sense.synonyms.join(', ')}
                   </span>
                 )}
               </div>
             ))
           )}
           <a
-            href={`https://en.wiktionary.org/wiki/${encodeURIComponent(word.trim().replace(/ /g, '_'))}`}
+            href="https://freedictionaryapi.com/"
             target="_blank"
             rel="noreferrer"
           >
-            Definitions from Wiktionary
+            Definitions from Free Dictionary API
           </a>
         </>
       )}
