@@ -71,15 +71,13 @@ function App() {
 
 
   return (
-    <div className="App">
+    <div className={`App ${mode}-mode`}>
       <ThemeProvider theme={theme}>
         <Container
           className="pageContainer"
           maxWidth="md"
           sx={{
-            bgcolor: 'background.default',
             color: 'text.primary',
-            transition: 'all 0.5s linear',
           }}
         >
           <div className="modeButton">
@@ -88,15 +86,17 @@ function App() {
                 display: 'flex',
                 width: '100%',
                 alignItems: 'center',
-                justifyContent: 'center',
+                justifyContent: 'flex-end',
                 borderRadius: 1,
               }}
             >
-              {theme.palette.mode} mode
+              <span className="modeLabel">{theme.palette.mode} theme</span>
               <IconButton
                 sx={{ ml: 1 }}
                 onClick={() => setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'))}
                 color="inherit"
+                aria-label={`Switch to ${theme.palette.mode === 'dark' ? 'light' : 'dark'} theme`}
+                title={`Switch to ${theme.palette.mode === 'dark' ? 'light' : 'dark'} theme`}
               >
                 {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
               </IconButton>

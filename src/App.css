@@ -1,23 +1,84 @@
 .App {
+  --surface: rgba(255, 255, 255, 0.82);
+  --surface-solid: #ffffff;
+  --text-primary: #172033;
+  --text-secondary: #68738a;
+  --accent: #5267d9;
+  --accent-soft: #edf0ff;
+  --border: rgba(85, 101, 139, 0.14);
+  --shadow: 0 24px 70px rgba(37, 51, 91, 0.12);
+  color: var(--text-primary);
   min-height: 100vh;
-  background-image: url('https://wallpaperaccess.com/full/5680348.jpg');
-  background-position: center;
-  background-size: cover;
-  transition: background-color 0.5s linear;
+  background:
+    radial-gradient(ellipse at 12% 8%, rgba(194, 204, 255, 0.38), transparent 34rem),
+    radial-gradient(ellipse at 92% 76%, rgba(195, 231, 235, 0.4), transparent 32rem),
+    #f6f8fc;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.App.dark-mode {
+  --surface: rgba(25, 32, 51, 0.88);
+  --surface-solid: #192033;
+  --text-primary: #f1f4fc;
+  --text-secondary: #aab4cc;
+  --accent: #aab5ff;
+  --accent-soft: rgba(119, 135, 255, 0.16);
+  --border: rgba(195, 204, 235, 0.14);
+  --shadow: 0 24px 70px rgba(0, 0, 0, 0.25);
+  background:
+    radial-gradient(ellipse at 12% 8%, rgba(74, 83, 150, 0.34), transparent 34rem),
+    radial-gradient(ellipse at 92% 76%, rgba(42, 105, 117, 0.2), transparent 32rem),
+    #111727;
 }
 
 .pageContainer {
   box-sizing: border-box;
   display: flex !important;
   flex-direction: column;
-  gap: clamp(1rem, 3vh, 2rem);
+  gap: clamp(1rem, 3vh, 1.75rem);
   min-height: 100vh;
-  padding-top: 1rem;
-  padding-bottom: 2rem;
+  padding-top: clamp(1rem, 3vh, 2rem);
+  padding-bottom: 3rem;
 }
 
 .modeButton {
   flex: 0 0 auto;
+}
+
+.modeLabel {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: capitalize;
+}
+
+.modeButton .MuiIconButton-root {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 4px 14px rgba(30, 45, 83, 0.06);
+}
+
+.modeButton .MuiIconButton-root:hover {
+  background: var(--accent-soft);
+}
+
+.search .MuiOutlinedInput-root {
+  border-radius: 16px;
+  background: var(--surface-solid);
+  box-shadow: 0 8px 24px rgba(37, 51, 91, 0.08);
+}
+
+.search .MuiOutlinedInput-notchedOutline {
+  border-color: var(--border);
+}
+
+.search .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: var(--accent);
+}
+
+.search .MuiOutlinedInput-root.Mui-focused {
+  box-shadow: 0 0 0 4px var(--accent-soft), 0 8px 24px rgba(37, 51, 91, 0.08);
 }
 
 @supports (min-height: 100dvh) {
@@ -30,7 +91,7 @@
 @media (max-width: 600px) {
   .pageContainer {
     gap: 0.75rem;
-    padding-top: 0.25rem;
-    padding-bottom: 1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 1.5rem;
   }
 }

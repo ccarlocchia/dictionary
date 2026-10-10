@@ -11,6 +11,7 @@ vi.mock('axios');
 
 const createEntry = (definition) => ({
   partOfSpeech: 'noun',
+  synonyms: ['entry synonym'],
   senses: [
     {
       definition,
@@ -64,10 +65,60 @@ test('loads and displays definitions, examples, and synonyms', async () => {
   expect(screen.getByText('A test definition.')).toBeInTheDocument();
   expect(screen.getByText('A sample sentence.')).toBeInTheDocument();
   expect(screen.getByText('sample')).toBeInTheDocument();
+  expect(screen.getByText('entry synonym')).toBeInTheDocument();
   expect(screen.getByText('Definitions from Free Dictionary API')).toHaveAttribute(
     'href',
     'https://freedictionaryapi.com/'
   );
+});
+
+test('renders nested subsenses, their examples, and their synonyms', async () => {
+  axios.get.mockResolvedValue({
+    data: {
+      entries: [
+        {
+          partOfSpeech: 'verb',
+          synonyms: ['entry-level synonym'],
+          senses: [
+            {
+              definition: 'The primary meaning.',
+              examples: [],
+              synonyms: [],
+              subsenses: [
+                {
+                  definition: 'A nested meaning.',
+                  tags: ['intransitive'],
+                  examples: ['A nested example.', 'Another nested example.'],
+                  synonyms: ['nested synonym'],
+                  subsenses: [
+                    {
+                      definition: 'A deeply nested meaning.',
+                      examples: [],
+                      synonyms: [],
+                      subsenses: [],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+  });
+
+  render(<App />);
+  searchFor('nested');
+  await advanceSearchDebounce();
+
+  expect(screen.getByText('The primary meaning.')).toBeInTheDocument();
+  expect(screen.getByText('A nested meaning.')).toBeInTheDocument();
+  expect(screen.getByText('A deeply nested meaning.')).toBeInTheDocument();
+  expect(screen.getByText('A nested example.')).toBeInTheDocument();
+  expect(screen.getByText('Another nested example.')).toBeInTheDocument();
+  expect(screen.getByText('intransitive')).toBeInTheDocument();
+  expect(screen.getByText('nested synonym')).toBeInTheDocument();
+  expect(screen.getByText('entry-level synonym')).toBeInTheDocument();
 });
 
 test('shows a not-found message when the API returns 404', async () => {
